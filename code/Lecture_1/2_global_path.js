@@ -26,7 +26,6 @@
 
 const fs = require("fs");
 const path = require("path");
-
 const targetPath = path.dirname(__dirname);
 
 for (let i = 1; i <= 16; i++) {

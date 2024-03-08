@@ -1,0 +1,15 @@
+{
+  "name": "lecture_1",
+  "version": "1.0.0",
+  "description": "* Javascript engine-> it only give you logic * Enviornment -> gives you the feature     * Frontend : Browser-> (console, setTimout, Fetch , ajax)[web apis]     * Backend : Nodejs (console,setTimout) * Enviornment exposes all those features in the form of an `object`",
+  "main": "1_file_system.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

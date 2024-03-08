@@ -11,7 +11,7 @@
 
 
 ### Build server -> netflix
-* work with  the files/directory -> fs
+* work with  the files/directory -> fs 
 * network calls -> http
 * access to your os-> os
 * work with path issues on cross platform-> path
@@ -24,3 +24,6 @@
          "\Users\apple\Documents\Projects_module_March_morning\notes" -->
 
 
+### installing a node package
+* npm init -y
+* npm i nodemon --save-dev
