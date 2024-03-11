@@ -4,13 +4,11 @@ const server = http.createServer();
  * req -> this represents the request
  * res -> this reprsenst the res obj
  * */
-
 server.on("request", function (req, res) {
     /**
      * url -> diffrentiate different feature
      // console.log("url",req.url);
      * **/
-    
     if (req.url == "/profile") {
         res.end("data of profile");
     } else if (req.url == "/about") {
