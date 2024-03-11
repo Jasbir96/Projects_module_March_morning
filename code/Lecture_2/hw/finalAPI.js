@@ -15,7 +15,9 @@ const userDataStore = JSON.parse(strContent);
 
 
 
-
+/*******
+ * Implement updateUser and delete user
+ * ***/ 
 const updateUser = (req, res) => {
   
 }
