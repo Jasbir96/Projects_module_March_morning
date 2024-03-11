@@ -5,13 +5,12 @@
 
 const express = require("express");
 const fs = require("fs");
+const short = require('short-uuid');
 // server is created
 const app = express();
 // reading the content
 const strContent = fs.readFileSync("./dev-data.json", "utf-8");
 const userDataStore = JSON.parse(strContent);
-
-
 
 
 const getUser = (req, res) => {
@@ -33,20 +32,37 @@ const getUser = (req, res) => {
                 message: "did not get the user"
             })
         }
-    }catch(err){
+    } catch (err) {
         res.status(500).json({
-            message:"Internal server error"
+            status: "Internal server error",
+            message: err.message
         })
     }
-   
-}
 
+}
 const createUser = (req, res) => {
-    console.log("Received post request");
-    console.log("body", req.body);
-    res.json({
-        message: "Recieved the post request"
-    })
+    try {
+        // id 
+        // const userDetails = req.body;
+        // const id = short.generate();
+        // userDetails.id = id;
+        // userDataStore.push(userDetails);
+        // // you have write the content to the file as well
+        // const struserStore = JSON.stringify(userDataStore);
+        // fs.writeFileSync("./dev-data.json", struserStore);
+
+        console.log(req.body);
+        res.status(201).json({
+            message: "user created",
+            user: req.body
+        })
+    } catch (err) {
+        res.status(500).json({
+            status: "Internal server error",
+            message:err.message
+        })
+    }
+
 }
 
 const updateUser = (req, res) => {
@@ -89,33 +105,18 @@ app.listen(3000, function () {
     console.log("Listening to port 3000");
 })
 
+/*****
+ * 1. **if** a route is matched -> it's handler will execute 
+ *           -> app.use -> it's handler will excute for every execute for every rquest
+ *           -> app.get,post,patch,delete -> it's handler will execute on resp. request
+ *      
+ * 
+ * ***/ 
 
 
 
 /****
- * {
-        "id": 1,
-        "name": "Steve Harvey",
-        "username": "Bret",
-        "email": "Sincere@april.biz",
-        "address": {
-            "street": "Kulas Light",
-            "suite": "Apt. 556",
-            "city": "Gwenborough",
-            "zipcode": "92998-3874",
-            "geo": {
-                "lat": "-37.3159",
-                "lng": "81.1496"
-            }
-        },
-        "phone": "1-770-736-8031 x56442",
-        "website": "hildegard.org",
-        "company": {
-            "name": "Romaguera-Crona",
-            "catchPhrase": "Multi-layered client-server neural-net",
-            "bs": "harness real-time e-markets"
-        }
-    },
- * 
- * 
+ * 1. sanity check -> data is there or not before actually doing the operations
+ * 2. authentciation  -> to protect the data
+ * 3. Authroization -> 
  * **/ 

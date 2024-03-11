@@ -33,11 +33,25 @@ const deleteUser = (req, res) => {
         message: "Recieved the delete request"
     })
 }
+const sanityCheckMiddleWare = (req, res,next) => {
+    const userDetails = req.body;
+    console.log(userDetails)
+   const isEmpty= Object.keys(userDetails).length == 0;
+    if (isEmpty) {
+        res.status(400).json({
+            status: "failure",
+            message: "userDetails are empty"
+        })
+    } else {
+        next();
+    }
+}
 app.use(express.json());
 // profile page -> user
 // 2. get the user
 app.get("/api/user", getUser);
 //1. create a user
+app.post("/api/user", sanityCheckMiddleWare);
 app.post("/api/user", createUser);
 // 3. update the user
 app.patch("/api/user", updateUser);
@@ -59,7 +73,7 @@ app.use(function (req, res) {
     })
 })
 
-console.log("hello");
+
 // listening for all the http request 
 app.listen(3000, function () {
     console.log("Listening to port 3000");
