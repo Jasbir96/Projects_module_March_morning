@@ -65,7 +65,6 @@ app.delete("/api/user", deleteUser);
  *          first -> req -> reprsents the HTTP request 
  *          second -> res -> reprsents the HTTP res 
  * **/
-
 app.use(function (req, res) {
     console.log("recieved the request");
     res.status(404).json({
