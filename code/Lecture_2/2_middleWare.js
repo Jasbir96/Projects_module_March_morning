@@ -20,7 +20,7 @@ const userDataStore = JSON.parse(strContent);
  * 
  * 
  * 2. authentciation  -> to protect the data
- * 3. Authroization -> 
+ * 3. Authorization -> 
  * **/
 
 /*****
