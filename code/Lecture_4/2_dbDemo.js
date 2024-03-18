@@ -2,12 +2,15 @@
  * npm init -y
  * npm install express
  * ***/
-
 const express = require("express");
-const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+/**********env variables **********/ 
+const dotenv = require("dotenv");
 dotenv.config();
 const { DB_USER, DB_PASSWORD } = process.env;
+/*****************************/ 
+
+
 
 const app = express();
 // reading the content
@@ -16,12 +19,17 @@ const app = express();
 const dbUrl =
     `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.drcvhxp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 
-mongoose.connect(dbUrl).then(function (conn) {
+mongoose.connect(dbUrl)
+.then(function (conn) {
     console.log("connected to db")
 }).catch(err => console.log(err))
-// connect with Database
+/************************************/ 
 
-/*************userSchema****************/
+
+
+/*************userModel creation ****************/
+
+/*********************userSchema**************************/ 
 let userSchemaObject = {
     name: {
         type: String,
@@ -54,11 +62,12 @@ let userSchemaObject = {
     }
 }
 const userSchema = new mongoose.Schema(userSchemaObject);
-const roles = ["admin", "buyer", "seller"];
 
+/**********************pre-hooks*****************/ 
 userSchema.pre("save", function () {
     this.confirmPassword = undefined;
 })
+const roles = ["admin", "buyer", "seller"];
 userSchema.pre("save", function (next) {
     let isPresent = roles.find((cRole) => { return cRole == this.role })
     if (isPresent == undefined) {
@@ -66,23 +75,22 @@ userSchema.pre("save", function (next) {
         next(error);
     }
 })
-// USERMODEL
+
+// USERMODEL 
 const UserModel = mongoose.model("MarchUserModel", userSchema);
 
-
-
-
-
-/***************handlers**********************/
+/***************handler functions**********************/
 const getUser = async (req, res) => {
     try {
         // template -> get the data from req.params
         const id = req.params.id;
+
         const user = await UserModel.findById(id);
         // if user is present -> send the resp
         if (user) {
             user.password = undefined;
             user.__v = undefined;
+
             if (user.confirmPassword) {
                 user.confirmPassword = undefined
             }
@@ -110,7 +118,7 @@ const getAllUser = async (req, res) => {
         // if user is present -> send the resp
         if (user.length != 0) {
             res.status(200).json({
-                message: user
+                message: [],
             })
             // if it's not there then send user not found 
         } else {
@@ -198,11 +206,11 @@ const sanityMiddleWare = (req, res, next) => {
         })
     }
 }
+
+/**********payload -> req.body**************/ 
 app.use(express.json());
 //1. create a user
-app.post("/api/user",
-    sanityMiddleWare,
-    createUser);// profile page -> user
+app.post("/api/user", sanityMiddleWare,createUser);// profile page -> user
 app.get("/api/user", getAllUser);
 // 2. get the user
 app.get("/api/user/:id", getUser);
@@ -218,6 +226,11 @@ app.use(function (req, res) {
         message: "resource not found"
     })
 })
+
+
+
+
+
 
 
 console.log("hello");
