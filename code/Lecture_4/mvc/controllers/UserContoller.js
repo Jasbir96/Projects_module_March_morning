@@ -34,7 +34,6 @@ const getUser = async (req, res) => {
 }
 const getAllUser = async (req, res) => {
     try {
-
         const user = await UserModel.find();
         // if user is present -> send the resp
         if (user.length != 0) {
