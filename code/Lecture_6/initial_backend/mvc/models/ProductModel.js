@@ -50,6 +50,18 @@ productSchema.pre("findOne", function (next) {
     this.select("-__v")
     next();
 })
+// productSchema.post("find", function (err, docs, next) {
+//     if (err) {
+//         next(err);
+//     } else {
+//         docs.forEach((doc) => {
+//             doc.id = doc["_id"];
+//             delete doc["_id"];
+//         })
+//         console.log(docs)
+//         next();
+//     }
+// })
 // productMODEL 
 const ProductModel = mongoose.model("MarchproductModel", productSchema);
 

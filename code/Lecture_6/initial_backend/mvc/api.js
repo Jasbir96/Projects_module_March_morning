@@ -6,6 +6,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 /**********env variables **********/
 const dotenv = require("dotenv");
+const cors = require("cors");
 dotenv.config();
 const { DB_USER, DB_PASSWORD } = process.env;
 /*****************************/
@@ -20,7 +21,13 @@ const dbUrl =
         console.log("connected to db")
     }).catch(err => console.log(err))
 /************************************/
-
+const corsConfig = {
+    origin: true,
+    credentials: true,
+};
+// this is allowing all the requests
+app.use(cors(corsConfig));
+app.options('*', cors(corsConfig));
 /**********payload -> req.body**************/
 app.use(express.json());
 
@@ -47,8 +54,8 @@ app.use(function (req, res) {
 })
 
 // listening for all the http request 
-app.listen(3000, function () {
-    console.log("Listening to port 3000");
+app.listen(3001, function () {
+    console.log("Listening to port 3001");
 })
 
 /****
