@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 /*********************productSchema**************************/
 let productSchemaObject = {
-    name: {
+    title: {
         type: String,
         required: [true,"name is required"],
         minlength: [4, "product name should atleast have four characters"],
@@ -14,21 +14,29 @@ let productSchemaObject = {
     },
     discount: {
         type: Number,
-        default: [0,"discount is required"],
+        default: 0,
         validate: [function () {
             return this.price >= this.discount;
         }, "discount can't be more then the price"]
     },
     description: String,
-    brand: String,
     category: {
         type: String,
         required: true
+    },
+    image:{
+        type:String,
+        default:"https://picsum.photos/200/300"
     }
 }
 const productSchema = new mongoose.Schema(productSchemaObject);
 /**********************pre-hooks*****************/
-const catgories = ["electronics", "furniture", "clothing", "educational"];
+const catgories = [
+    "electronics",
+    "jewelery",
+    "men's clothing",
+    "women's clothing"
+];
 
 productSchema.pre("save", function (next) {
     let isPresent = catgories.find((cCategory) => { return cCategory == this.category })

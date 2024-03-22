@@ -14,7 +14,8 @@ const app = express();
 /*****connect to the DB******/
 const dbUrl =
     `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.drcvhxp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-mongoose.connect(dbUrl)
+
+    mongoose.connect(dbUrl)
     .then(function (conn) {
         console.log("connected to db")
     }).catch(err => console.log(err))
