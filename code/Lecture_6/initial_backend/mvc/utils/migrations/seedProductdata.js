@@ -16,7 +16,6 @@
  * ***/
 const ProductModel = require("../../models/ProductModel");
 const productList = require("../../seed_data/products");
-
 function seedProductData(Model, entries) {
     const mongoose = require("mongoose");
     const path = require("path");
@@ -48,5 +47,4 @@ function seedProductData(Model, entries) {
             console.log("connection closed");
         })
 }
-
 seedProductData(ProductModel, productList);
