@@ -42,7 +42,15 @@ app.use(cookieParser());
 
 const signupController = async function (req, res) {
     try {
-    
+        // get the user details
+        const userDetails = req.body;
+        // create the user
+        const user = UserModel.create(userDetails);
+        // send the reponse
+        res.status(201).json({
+            message: "user created",
+            newUser: user
+        })
     } catch (err) {
         console.log(err);
         res.status(500).json({
@@ -52,11 +60,15 @@ const signupController = async function (req, res) {
     }
 }
 
-
-
 const loginController = async function (req, res) {
     try {
-
+/***
+ * 1. email and password -> in payload or not -> yes / no -> return res -> 400
+ * 2. search with email -> yes / no return -> password/email is not correct
+ * 3. password -> compare -> password /not correct -> password/email is not correct
+ * 4. create the token and send it -> payload 
+ * 5. send the response user is logged in
+ * ***/ 
 
     } catch (err) {
         console.error(err);
@@ -68,13 +80,18 @@ const loginController = async function (req, res) {
 }
 const protectRouteMiddleWare = async function (req, res, next) {
     try {
-       
+/***
+ * 1. check for jwt token -> if yes move to next step -> if no -> return 400
+ * 2. verify the token -> if yes move to next step -> if no -> return 400
+ * 3. you can add that property to req object an call next
+ * 
+ * **/  
     } catch (err) {
         res.status(500).json({
             message: err.message,
             status: "failure"
         })
-        
+
     }
 }
 const getUserData = async function (req, res) {
