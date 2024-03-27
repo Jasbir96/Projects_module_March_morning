@@ -17,7 +17,6 @@ const promisifiedJWTVerify = promisify(jwt.verify);
 
 
 /**********************connection to our DB********************************/
-
 const dbURL = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.drcvhxp.mongodb.net/?retryWrites=true&w=majority`;
 // only done once 
 mongoose.connect(dbURL)
@@ -38,7 +37,6 @@ app.use(cookieParser());
  * 3. /allowIfLoggedIn -> allows you to acess getUserData if user is authenticated 
  * 
  * **/
-
 
 const signupController = async function (req, res) {
     try {
@@ -69,7 +67,6 @@ const loginController = async function (req, res) {
  * 4. create the token and send it -> payload 
  * 5. send the response user is logged in
  * ***/ 
-
     } catch (err) {
         console.error(err);
         res.status(500).json({

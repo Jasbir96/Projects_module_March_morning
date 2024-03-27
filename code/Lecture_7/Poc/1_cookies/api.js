@@ -40,7 +40,6 @@ app.get("/product", function (req, res) {
     res.status(200).json({
         message: `thank you for accessing product route ${messageStr}`
     })
-
 })
 // clear your cookies -> on a server
 app.get("/clearCookies", function (req, res) {
