@@ -15,9 +15,7 @@ const payload = "1234";
 app.get("/sign", async function (req, res) {
     try {
         // create the token
-        const authToken = await
-         promisdiedJWTsign({ payload }, 
-            SECRET, { algorithm: "HS256" });
+        const authToken = await promisdiedJWTsign({ payload }, SECRET, { algorithm: "HS256" });
         // add it to cookies
         // transport -> cookies
         res.cookie("jwt", authToken, { maxAge: 90000000, httpOnly: true });
