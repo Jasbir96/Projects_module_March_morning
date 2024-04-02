@@ -38,7 +38,8 @@ userSchema.pre("save", function (next) {
     this.confirmPassword = undefined;
     next();
 })
-const roles = ["admin", "buyer", "seller", "user"];
+const roles = 
+["admin",  "seller", "user","manager"];
 userSchema.pre("save", function (next) {
     let isPresent = roles.find((cRole) => { return cRole == this.role })
 
@@ -52,7 +53,7 @@ userSchema.pre("save", function (next) {
  * find-> ->getall the proprties , but (remove password, confirmpassword, __v)-> result 
  * ***/
 userSchema.pre("findOne", function (next) {
-    this.select("-password -confirmPassword -__v")
+    this.select("-confirmPassword -__v")
     next();
 })
 

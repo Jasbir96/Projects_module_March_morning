@@ -3,7 +3,6 @@ const express = require("express");
 
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-
 // including env variables
 dotenv.config();
 const { PORT, DB_PASSWORD, DB_USER, JWT_SECRET } = process.env;
@@ -29,7 +28,6 @@ const UserModel = require("./model/UserModel");
 const sendEmailHelper = require("./dynamicMailSender");
 const fs = require("fs");
 // never -> sync in your server 
-const HtmlTemplateString = fs.readFileSync("./otp.html", "utf-8");
 /*************************************************/
 const app = express();
 /***to get the data in req.body **/
@@ -41,7 +39,7 @@ app.use(cookieParser());
  * 2. login 
  * 3. /allowIfLoggedIn -> allows you to acess getUserData if user is authenticated 
  * **/
-
+/**********************auth handlers**************************/
 
 const signupController = async function (req, res) {
     try {
@@ -64,8 +62,11 @@ const signupController = async function (req, res) {
     }
 }
 
-
-
+/**
+ * It will open forgetPassword
+ *  *
+ *  * Token 
+ * **/
 const loginController = async function (req, res) {
     try {
 
@@ -116,47 +117,6 @@ const loginController = async function (req, res) {
         })
     }
 }
-const protectRouteMiddleWare = async function (req, res, next) {
-    try {
-        let jwttoken = req.cookies.JWT;
-
-        let decryptedToken = await promisifiedJWTVerify(jwttoken, JWT_SECRET);
-        if (decryptedToken) {
-            let userId = decryptedToken.id;
-            // adding the userId to the req object
-            req.userId = userId
-            next();
-        }
-    } catch (err) {
-        res.status(500).json({
-            message: err.message,
-            status: "failure"
-        })
-
-    }
-}
-const getUserData = async function (req, res) {
-    try {
-        const id = req.userId;
-        const user = await UserModel.findById(id);
-        res.status(200).json({
-            "message": "user data retrieved  successfully",
-            user: user
-        })
-    } catch (err) {
-        res.status(500).json({
-            message: err.message,
-            status: "failure"
-        })
-    }
-}
-
-/**
- * It will open forgetPassword
- *  *
- *  * Token 
- * **/
-
 const forgetPasswordController = async function (req, res) {
     try {
         /***
@@ -198,26 +158,86 @@ const resetPasswordController = async function (req, res) {
 }
 
 
+const protectRouteMiddleWare = async function (req, res, next) {
+    try {
+        let jwttoken = req.cookies.JWT;
 
+        let decryptedToken = await promisifiedJWTVerify(jwttoken, JWT_SECRET);
+        if (decryptedToken) {
+            let userId = decryptedToken.id;
+            // adding the userId to the req object
+            req.userId = userId
+            next();
+        }
+    } catch (err) {
+        res.status(500).json({
+            message: err.message,
+            status: "failure"
+        })
 
+    }
+}
+const checkIfAdminMiddleWare = async function (req, res, next) {
+    try {
+        const id = req.userId;
+        // find the user by id 
+        const user = await UserModel.findById(id);
+        if (user.role == "admin") {
+            next();
+        } else {
+            res.status(403).json({
+                message: "You are not authorized to access this route",
+                status: "failure"
+            })
+        }
+    } catch (err) {
 
+    }
+}
 
+/***user functions***/
+const getUserData = async function (req, res) {
+    try {
+        const id = req.userId;
+        const user = await UserModel.findById(id);
+        res.status(200).json({
+            "message": "user data retrieved  successfully",
+            user: user
+        })
+    } catch (err) {
+        res.status(500).json({
+            message: err.message,
+            status: "failure"
+        })
+    }
+}
 
-
-
+const getAllUser = async function (req, res) {
+    try {
+        const userList = await UserModel.find();
+        res.status(200).json({
+            "message": "user data retrieved  successfully",
+            user: userList
+        })
+    } catch (err) {
+        res.status(500).json({
+            message: err.message,
+            status: "failure"
+        })
+    }
+}
 
 /***
  * Forget password -> Email 
- * Reset PAssword
+ * Reset Password
  * */
-
-
 /************routes***************/
 app.post("/signup", signupController);
 app.post("/login", loginController);
 app.get("/allowIfLoggedIn", protectRouteMiddleWare, getUserData);
 app.patch("/forgetpassword", forgetPasswordController);
 app.patch("/resetPassword/:userId", resetPasswordController);
+app.get("/allowIfAdmin", protectRouteMiddleWare, checkIfAdminMiddleWare, getAllUser);
 
 
 /******************handler functions ***************/

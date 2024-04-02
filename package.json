@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

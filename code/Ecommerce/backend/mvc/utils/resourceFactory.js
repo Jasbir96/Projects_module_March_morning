@@ -110,11 +110,15 @@ const getFactory = function (ElementModel) {
         try {
             // template -> get the data from req.params
             const id = req.params.id;
-            const product = await ElementModel.findById(id);
+            const element = await ElementModel.findById(id);
+            // remove the password from the response if it is for user
+            if (element.password) {
+                element.password = undefined;
+            }
             // if user is present -> send the resp
-            if (product) {
+            if (element) {
                 res.status(200).json({
-                    message: product
+                    message: element
                 })
                 // if it's not there then send user not found 
             } else {

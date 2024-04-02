@@ -29,9 +29,24 @@ const userSchemaRules = {
         type: Date,
         default: Date.now()
     },
+    role: {
+        type: String,
+        default: "user"
+    }
 }
 // schema-> structure and validation 
 const userSchema = new mongoose.Schema(userSchemaRules);
+const roles = ["admin", "buyer", "seller", "user"];
+
+userSchema.pre("save", function (next) {
+    let isPresent = roles.find((cRole) => { return cRole == this.role })
+
+    if (isPresent == undefined) {
+        const error = new Error("role is invalid");
+        return next(error);
+    }
+    return next();
+})
 // this model -> will have queries 
-const UserModel = mongoose.model("userModel", userSchema);
+const UserModel = mongoose.model("MarchUserModel", userSchema);
 module.exports = UserModel;
