@@ -55,23 +55,7 @@ const loginController = async function (req, res) {
         })
     }
 }
-const forgetPasswordController = async function (req, res) {
-    try {
-        /***
-         * get an email
-         * token is send to the given email
-         * **/
 
-    } catch (err) {
-        res.status(500).json({
-            message: err.message,
-            status: "failure"
-        })
-    }
-
-
-
-}
 const signupController = async function (req, res) {
     try {
         // add it to the db 
@@ -92,17 +76,111 @@ const signupController = async function (req, res) {
         })
     }
 }
+const forgetPasswordController = async function (req, res) {
+    try {
+        /****
+                * 1. You can ask for email
+                * 2. check if email is present or not
+                *  * if email is not present -> send a response to the user(user not found)
+                * 3. if email is present -> create basic otp -> and send to the email 
+                * 4. also store that otp -> in the userModel
+                * 5. to avoid that collison
+                *      response -> unique url with id of the user and that will form your reset password 
+                * 
+                * ***/
+        if (req.body.email == undefined) {
+            return res.status(401).json({
+                status: "failure",
+                message: "Please enter the email for forget Password"
+            })
+        }
+        // find the user -> going db -> getting it for the server
+        let user = await UserModel.findOne({ email: req });
+        if (user == null) {
+            return res.status(404).json({
+                status: "failure",
+                message: "user not found for this email"
+            })
+        }
+        // got the user -> on your server
+        const otp = otpGenerator();
+        user.otp = otp;
+        user.otpExpiry = Date.now() + 10 * 60 * 1000;
+        // those updates will be send to the db
+        await user.save();
+        // send the mail to there email -> otp
+        res.status(200).json({
+            status: "success",
+            message: "otp sent to your email",
+            reseturl: `http://localhost:3000/resetPassword/${user["_id"]}`,
+            otp: otp
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: err.message,
+            status: "failure"
+        })
+    }
+    //  email
+}
 
 const resetPasswordController = async function (req, res) {
     //  -> otp 
     //  newPassword and newConfirmPassword 
     // -> params -> id 
-    /****
-     * 1. enter the otp
-     * 2. Password and confirm password
-     * 3. password is updated 
-     * **/
+
     try {
+        let resetDetails = req.body;
+        // required fields are there or not 
+        if (!resetDetails.password == true || !resetDetails.otp == true || !resetDetails.confirmPassword == true) {
+            res.status(401).json({
+                status: "failure",
+                message: "invalid request"
+            })
+        }
+        // i will serach with the id -> user
+        const user = await UserModel.findById(req.params.id);
+        // if user is not present
+        if (user == null) {
+            return res.status(404).json({
+                status: "failure",
+                message: "user not found"
+            })
+        }
+        // if otp is not present 
+        if (user.otp == undefined) {
+            return res.status(401).json({
+                status: "failure",
+                message: "uauthorized acces to reset Password"
+            })
+        }
+        // if otp is expired
+        if (Date.now() > user.otpExpiry) {
+            return res.status(401).json({
+                status: "failure",
+                message: "otp expired"
+            })
+        }
+        // if otp is incorrect
+        if (user.otp != resetDetails.otp) {
+            return res.status(401).json({
+                status: "failure",
+                message: "otp is incorrect"
+            })
+        }
+
+        user.password = resetDetails.password;
+        user.confirmPassword = resetDetails.confirmPassword;
+        // remove the otp from the user
+        user.otp = undefined;
+        user.otpExpiry = undefined;
+        await user.save();
+        res.status(200).json({
+            status: "success",
+            message: "password reset successfully"
+        })
+
+
 
     } catch (err) {
         res.status(500).json({
@@ -114,7 +192,9 @@ const resetPasswordController = async function (req, res) {
 
 }
 
-
+const otpGenerator = function () {
+    return Math.floor((Math.random() * 10000) + 90000);
+}
 
 module.exports = {
     loginController,

@@ -30,7 +30,13 @@ let userSchemaObject = {
     role: {
         type: String,
         default: "user"
-    }
+    },
+    otp: {
+        type: String
+    },
+    otpExpiry: {
+        type: Date
+    },
 }
 const userSchema = new mongoose.Schema(userSchemaObject);
 /**********************pre-hooks*****************/
@@ -38,8 +44,8 @@ userSchema.pre("save", function (next) {
     this.confirmPassword = undefined;
     next();
 })
-const roles = 
-["admin",  "seller", "user","manager"];
+const roles =
+    ["admin", "seller", "user", "manager"];
 userSchema.pre("save", function (next) {
     let isPresent = roles.find((cRole) => { return cRole == this.role })
 
