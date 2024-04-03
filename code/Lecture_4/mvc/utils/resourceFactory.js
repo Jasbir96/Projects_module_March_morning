@@ -22,8 +22,6 @@ const createFactory = function (ElementModel) {
     }
 }
 
-
-
 module.exports={createFactory};
 
 // const createUser = 

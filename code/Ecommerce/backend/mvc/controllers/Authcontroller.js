@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 const promisify = require("util").promisify;
 const promisifiedJWTSign = promisify(jwt.sign);
 const { JWT_SECRET } = process.env;
-
 const loginController = async function (req, res) {
     try {
 
@@ -55,7 +54,6 @@ const loginController = async function (req, res) {
         })
     }
 }
-
 const signupController = async function (req, res) {
     try {
         // add it to the db 
@@ -123,7 +121,6 @@ const forgetPasswordController = async function (req, res) {
     }
     //  email
 }
-
 const resetPasswordController = async function (req, res) {
     //  -> otp 
     //  newPassword and newConfirmPassword 
@@ -191,15 +188,12 @@ const resetPasswordController = async function (req, res) {
 
 
 }
-
 const otpGenerator = function () {
     return Math.floor((Math.random() * 10000) + 90000);
 }
-
 module.exports = {
     loginController,
     forgetPasswordController,
     resetPasswordController,
     signupController
-
 }
