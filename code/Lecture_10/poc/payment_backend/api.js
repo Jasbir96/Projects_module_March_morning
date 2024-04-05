@@ -12,8 +12,9 @@ app.use(express.json());
 // create the instance -> this instance will do everything wrt to orders
 const razorpayInstance = new Razorpay({
     key_id: process.env.RAZORPAY_PUBLIC_KEY,
-    key_secret: process.env.RAZORPAY_SECRET_KEY,
+    key_secret: process.env.RAZORPAY_PRIVATE_KEY,
 });
+
 app.get("/", (req, res) => {
     res.send("Hello Payment");
 })
@@ -53,6 +54,7 @@ app.post("/checkout", async (req, res) => {
 
     }
 });
+
 // verify the payment is done or not -> 
 app.post("/verify", async (req, res) => {
     try {

@@ -13,7 +13,6 @@ ProductRouter.route("/")
         createProduct)
     //admin, manager
     .get(protectRouteMiddleWare, 
-        checkForValidRolesMiddleWare(["admin","manager"]),
          getAllProduct);
 ProductRouter.route("/:id")
     //  no authroization

@@ -22,9 +22,12 @@ function loadScript() {
 async function openRazorpayCheckout() {
   await loadScript();
   // 1. get the order from backend 
-  const resp = await fetch("http://localhost:3001/checkout", { method: "POST" });
+  const resp = await 
+  fetch("http://localhost:3001/checkout", 
+  { method: "POST" });
   const data = await resp.json();
-  const orderConfig = data.message;
+  console.log("data",data);
+  const orderConfig = data.order;
   // // 2. create new order object that will be send to payment gateway
   const finalOrderObject = {
     "key": "rzp_test_aMoof3cAGQEOfS", // Enter the Key ID generated from the Dashboard
