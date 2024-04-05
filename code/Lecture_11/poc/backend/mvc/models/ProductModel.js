@@ -4,12 +4,12 @@ const mongoose = require("mongoose");
 let productSchemaObject = {
     title: {
         type: String,
-        required: [true,"name is required"],
+        required: [true, "name is required"],
         minlength: [4, "product name should atleast have four characters"],
     },
     price: {
         type: Number,
-        required: [true,"price is required"],
+        required: [true, "price is required"],
         min: [0, "price can't be negative"]
     },
     discount: {
@@ -24,10 +24,21 @@ let productSchemaObject = {
         type: String,
         required: true
     },
-    image:{
-        type:String,
-        default:"https://picsum.photos/200/300"
-    }
+    image: {
+        type: String,
+        default: "https://picsum.photos/200/300"
+    },
+    reviews: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "MarchreviewModel"
+    },
+    // will be given to you by razorpay 
+    averageRating: {
+        type: Number,
+        max: [5, "avg rating can not be more than 5"],
+        min: [1, "rating can not be less than 1"],
+
+    },
 }
 const productSchema = new mongoose.Schema(productSchemaObject);
 /**********************pre-hooks*****************/
@@ -42,7 +53,7 @@ productSchema.pre("save", function (next) {
     let isPresent = catgories.find((cCategory) => { return cCategory == this.category })
     if (isPresent == undefined) {
         const error = new Error("category is invalid");
-       return next(error);
+        return next(error);
     }
     return next();
 })

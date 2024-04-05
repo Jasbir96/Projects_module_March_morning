@@ -37,6 +37,10 @@ let userSchemaObject = {
     otpExpiry: {
         type: Date
     },
+    bookings: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "MarchbookingModel"
+    }
 }
 const userSchema = new mongoose.Schema(userSchemaObject);
 /**********************pre-hooks*****************/

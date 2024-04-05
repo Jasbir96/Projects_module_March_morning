@@ -41,6 +41,7 @@ const ProductRouter = require("./router/ProductRouter");
 const UserRouter = require("./router/UserRouter");
 const AuthRouter = require("./router/AuthRouter");
 const BookingRouter = require("./router/BookingRouter");
+const ReviewRouter = require("./router/ReviewRouter");
 // request -> user -> api/v1/user
 app.use("/api/v1/user", UserRouter);
 // request -> product -> api/v1/product
@@ -48,6 +49,7 @@ app.use("/api/v1/product", ProductRouter);
 
 app.use("/api/v1/auth", AuthRouter);
 app.use("/api/v1/booking", BookingRouter);
+app.use("/api/v1/review", ReviewRouter);    
 
 
 

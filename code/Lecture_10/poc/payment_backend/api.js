@@ -59,15 +59,20 @@ app.post("/checkout", async (req, res) => {
 app.post("/verify", async (req, res) => {
     try {
         // get the signature from header
-        const inComingSignature = req.headers['x-razorpay-signature'];
+        const inComingSignature = 
+        req.headers['x-razorpay-signature'];
         // create the hash
-        const shasum = crypto.createHmac("sha256", process.env.WEBHOOK_SECRET);
+        const shasum = 
+        crypto.createHmac("sha256", process.env.WEBHOOK_SECRET);
         shasum.update(JSON.stringify(req.body));
         const freshSignature = shasum.digest('hex');
         if (freshSignature === inComingSignature) {
             console.log("Signature is valid");
             // do the further processing
-            console.log(req.body);
+            const order_id=req.body.payload.payment.entity.order_id;
+            console.log("order_id",order_id);
+            console.log("event",req.body.event);
+
             res.status(200).json({ message: "OK" });
         } else {
             // there some tempering 
@@ -82,7 +87,6 @@ app.post("/verify", async (req, res) => {
 
 
 })
-
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);

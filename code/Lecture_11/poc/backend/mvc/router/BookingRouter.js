@@ -4,12 +4,13 @@ const UserModel = require("../models/UserModel");
 const ProductModel = require("../models/ProductModel");
 const BookingModel = require("../models/BookingModel");
 const BookingRouter = express.Router();
+const crypto = require('crypto');
 
 BookingRouter.use(protectRouteMiddleWare);
 BookingRouter.post("/checkout", initalBookingController)
 
 BookingRouter.get("/", getAllBookingsController)
-BookingRouter.post("verification", confirmPaymentController)
+BookingRouter.post("/verification", confirmPaymentController)
 BookingRouter.get("/orders", ordersController);
 const Razorpay = require('razorpay');
 
@@ -35,8 +36,7 @@ async function initalBookingController(req, res) {
         //1.  loggedIN -> token -> userId ->
         const userId = req.userId;
         const productId = req.body.productId
-        const { email, name } =
-            await UserModel.findById(userId);
+        const user = await UserModel.findById(userId);
         // 2. productId -> frontend
         //     * search the product -> get it's price
         const product = await ProductModel.findById(productId);
@@ -64,11 +64,14 @@ async function initalBookingController(req, res) {
             product: productId
         }
         const booking = await BookingModel.create(bookingDetails);
+        user.bookings.push(booking["_id"]);
+        await user.save();
+
         res.status(200).json({
             status: "success",
             message: {
                 order: order,
-                email, name,
+                email: user.email, name: user.name,
                 reciept: booking["_id"]
             }
         })
@@ -107,9 +110,7 @@ async function getAllBookingsController(req, res) {
 async function ordersController(req, res) {
     try {
         const userId = req.userId;
-        const bookings = await BookingModel
-            .find({ user: userId })
-            .populate({ path: "product" });
+        const bookings = await UserModel.findById(userId).populate({ path: "bookings" });
         res.status(200).json({
             message: "all bookings",
             bookings
@@ -121,5 +122,38 @@ async function ordersController(req, res) {
         })
     }
 }
-function confirmPaymentController(req, res) { }
+async function confirmPaymentController(req, res) {
+    try {
+        // verify -> the request from -> api
+        const inComingSignature = req.headers['x-razorpay-signature'];
+        // create the hash
+        const shasum = crypto.createHmac("sha256", process.env.WEBHOOK_SECRET);
+        shasum.update(JSON.stringify(req.body));
+        const freshSignature = shasum.digest('hex');
+        if (freshSignature === inComingSignature) {
+            // 2. get the order_id from the request
+            const body = req.body;
+            const order_id = body.payload.payment.enitity.order_id;
+            const event = body.event;
+            const booking = await BookingModel.find({ payment_order_id: order_id });
+            if (event === "payment.captured") {
+                // go to the booking -> update the status -> success or a failure
+                booking.status = "success";
+                await booking.save();
+            } else {
+                booking.status = "failure";
+                await booking.save();
+            }
+            console.log(req.body);
+            res.status(200).json({ message: "OK" });
+        }
+
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "server error"
+        })
+    }
+}
 module.exports = BookingRouter;
