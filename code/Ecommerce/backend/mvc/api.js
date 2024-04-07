@@ -36,7 +36,6 @@ app.use(express.json());
 /*******to get the cookie in req.cookies**/
 app.use(cookieParser());
 
-
 const ProductRouter = require("./router/ProductRouter");
 const UserRouter = require("./router/UserRouter");
 const AuthRouter = require("./router/AuthRouter");
@@ -70,4 +69,3 @@ app.listen(3000, function () {
  * MVC archtitetcture
  * factory design pattern
  * **/
-

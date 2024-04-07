@@ -75,7 +75,6 @@ const updateFactory = function (ElementModel) {
 
     }
 }
-
 const deleteFactory = function (ElementModel) {
     return async (req, res) => {
         try {
