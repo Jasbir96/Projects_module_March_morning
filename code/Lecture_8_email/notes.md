@@ -1,3 +1,4 @@
+**final forget and reset password is implemented on Ecommerce backend**
 ##  SASS service
 Tracking and Auth 
 * Users 
