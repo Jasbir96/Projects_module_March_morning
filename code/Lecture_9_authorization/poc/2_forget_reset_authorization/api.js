@@ -1,4 +1,3 @@
-
 const express = require("express");
 
 const dotenv = require("dotenv");
@@ -6,7 +5,6 @@ const mongoose = require("mongoose");
 // including env variables
 dotenv.config();
 const { PORT, DB_PASSWORD, DB_USER, JWT_SECRET } = process.env;
-
 
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");

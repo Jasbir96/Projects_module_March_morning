@@ -218,7 +218,6 @@ app.get("/api/user/:id", getUser);
 app.patch("/api/user/:id", updateUser);
 // 4 delete the user
 app.delete("/api/user/:id", deleteUser);
-
 // 5. resource not found 
 app.use(function (req, res) {
     console.log("recieved the request");

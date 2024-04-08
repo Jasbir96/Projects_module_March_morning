@@ -1,0 +1,104 @@
+/***
+ * npm init -y
+ * npm install express
+ * ***/
+const express = require("express");
+const mongoose = require("mongoose");
+
+const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+
+/**********env variables **********/
+const dotenv = require("dotenv");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const path = require("path")
+dotenv.config({ path: path.join(__dirname, "../", ".env") });
+const { DB_USER, DB_PASSWORD, } = process.env;
+console.log(DB_USER, DB_PASSWORD);
+/*****************************/
+const app = express();
+
+// reading the content
+/*****connect to the DB******/
+const dbUrl =
+    `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.drcvhxp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+mongoose.connect(dbUrl)
+    .then(function (conn) {
+        console.log("connected to db")
+    }).catch(err => console.log(err))
+/************************************/
+const corsConfig = {
+    origin: true,
+    credentials: true,
+};
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+})
+app.use(helmet());
+app.use(limiter);
+app.use(mongoSanitize());
+
+// Or, to replace these prohibited characters with _, use:
+app.use(
+    mongoSanitize({
+        replaceWith: '_',
+    }),
+);
+// this is allowing all the requests
+app.use(cors(corsConfig));
+app.options('*', cors(corsConfig));
+/**********payload -> req.body**************/
+app.use(express.json());
+/*******to get the cookie in req.cookies**/
+app.use(cookieParser());
+
+
+const ProductRouter = require("./router/ProductRouter");
+const UserRouter = require("./router/UserRouter");
+const AuthRouter = require("./router/AuthRouter");
+const BookingRouter = require("./router/BookingRouter");
+const ReviewRouter = require("./router/ReviewRouter");
+// request -> user -> api/v1/user
+app.use("/api/v1/user", UserRouter);
+// request -> product -> api/v1/product
+app.use("/api/v1/product", ProductRouter);
+
+app.use("/api/v1/auth", AuthRouter);
+app.use("/api/v1/booking", BookingRouter);
+app.use("/api/v1/review", ReviewRouter);
+
+
+
+/***********************user*********************/
+
+// 5. resource not found 
+
+app.use(function (req, res) {
+    console.log("recieved the request");
+    res.status(404).json({
+        message: "resource not found"
+    })
+})
+
+// listening for all the http request 
+app.listen(process.env.PORT, function () {
+    console.log(`Listening to port ${process.env.PORT}`);
+})
+
+/****
+ * REST API
+ * MVC archtitetcture
+ * factory design pattern
+ * **/
+
+
+/***
+ * 3 device -> ip address
+ * i can connect on three different devices through 3 diffreent wifi
+ *  * 1. mobile -> 99
+ * * 2. laptop ->99
+ * * 3. desktop -> 99
+ * **/
