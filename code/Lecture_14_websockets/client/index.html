@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .messages {
+            list-style: none;
+        }
+
+        .reciever {
+            background-color: lightgreen;
+            padding: 10px;
+            margin-left: 30px;
+            width: 50%;
+            border: 1px solid;
+        }
+
+        .sender {
+            background-color: lightgrey;
+            border: 1px solid;
+            width: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Realtime Chat example</h1>
+    <img src="img.jpeg">
+
+    <div>
+        <input type="text" class="msg">
+        <button class="send">send Message</button>
+    </div>
+    <div>
+        <input type="text" class="reciversocket">
+        <button class="addsocket">Send Private Message</button>
+    </div>
+
+    <ul class="messages"></ul>
+    <!-- included websockets -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- you want to connect with the server -->
+    <script>
+
+    </script>
+    <script src="script.js"></script>
+</body>
+
+</html>
