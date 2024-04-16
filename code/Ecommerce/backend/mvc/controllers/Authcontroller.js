@@ -129,8 +129,10 @@ const resetPasswordController = async function (req, res) {
     try {
         let resetDetails = req.body;
         // required fields are there or not 
-        if (!resetDetails.password == true || !resetDetails.otp == true || !resetDetails.confirmPassword == true) {
-            res.status(401).json({
+        if (!resetDetails.password == true || 
+            !resetDetails.otp == true ||
+             !resetDetails.confirmPassword == true) {
+          return  res.status(401).json({
                 status: "failure",
                 message: "invalid request"
             })
@@ -151,6 +153,7 @@ const resetPasswordController = async function (req, res) {
                 message: "uauthorized acces to reset Password"
             })
         }
+        
         // if otp is expired
         if (Date.now() > user.otpExpiry) {
             return res.status(401).json({
